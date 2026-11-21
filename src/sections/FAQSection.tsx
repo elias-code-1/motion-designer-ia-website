@@ -1,9 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { HelpCircle, ChevronDown, MessageCircle } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, isCompactViewport, prefersReducedMotion } from '../utils/gsapConfig';
 
 interface FAQSectionProps {
   t: any;
@@ -73,15 +70,16 @@ export default function FAQSection({ lang }: FAQSectionProps) {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   useEffect(() => {
+    if (isCompactViewport() || prefersReducedMotion()) return;
     const ctx = gsap.context(() => {
       gsap.from(sectionRef.current, {
         opacity: 0,
-        y: 40,
-        duration: 0.8,
+        y: 36,
+        duration: 0.75,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 80%',
+          start: 'top 82%',
           once: true,
         },
       });
@@ -98,20 +96,23 @@ export default function FAQSection({ lang }: FAQSectionProps) {
     <section
       id="faq"
       ref={sectionRef}
-      className="relative py-24 px-4 sm:px-6 lg:px-8 bg-[#0A1628] overflow-hidden"
+      className="relative py-14 sm:py-24 px-4 sm:px-6 lg:px-8 bg-[#0A1628] overflow-x-clip"
     >
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[180px] pointer-events-none" />
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 70%)',
+        }}
+      />
 
       <div className="max-w-4xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold uppercase tracking-wider mb-4">
             <HelpCircle className="w-4 h-4 text-[#FFD700]" />
             <span>FAQ</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
             {lang === 'fr' ? (
               <>
                 Questions <span className="text-[#FFD700]">Fréquentes</span>
@@ -123,22 +124,21 @@ export default function FAQSection({ lang }: FAQSectionProps) {
             )}
           </h2>
 
-          <p className="text-white/70 text-base sm:text-lg">
+          <p className="text-white/70 text-sm sm:text-lg">
             {lang === 'fr'
               ? 'Toutes les réponses à tes questions avant de commencer.'
               : 'Clear answers to everything you need to know before joining.'}
           </p>
         </div>
 
-        {/* Accordion list */}
-        <div className="space-y-4 mb-12">
+        <div className="space-y-3.5 sm:space-y-4 mb-10 sm:mb-12">
           {FAQ_ITEMS.map((item, idx) => {
             const isOpen = openIdx === idx;
 
             return (
               <div
                 key={idx}
-                className={`rounded-2xl transition-all border ${
+                className={`rounded-2xl transition-colors border ${
                   isOpen
                     ? 'bg-[#1A2744] border-[#FFD700]/40 shadow-xl'
                     : 'bg-[#111f38]/60 border-white/10 hover:border-white/20'
@@ -146,10 +146,10 @@ export default function FAQSection({ lang }: FAQSectionProps) {
               >
                 <button
                   onClick={() => toggle(idx)}
-                  className="w-full p-5 sm:p-6 flex items-center justify-between text-left gap-4"
+                  className="w-full p-4 sm:p-6 flex items-center justify-between text-left gap-3 sm:gap-4"
                   aria-expanded={isOpen}
                 >
-                  <span className="font-extrabold text-base sm:text-lg text-white leading-snug">
+                  <span className="font-extrabold text-sm sm:text-lg text-white leading-snug">
                     {lang === 'en' ? item.qEn : item.qFr}
                   </span>
 
@@ -163,7 +163,7 @@ export default function FAQSection({ lang }: FAQSectionProps) {
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 sm:px-6 pb-6 pt-1 text-sm sm:text-base text-white/75 leading-relaxed border-t border-white/5">
+                  <div className="px-4 sm:px-6 pb-5 sm:pb-6 pt-1 text-xs sm:text-base text-white/75 leading-relaxed border-t border-white/5">
                     {lang === 'en' ? item.aEn : item.aFr}
                   </div>
                 )}
@@ -172,9 +172,8 @@ export default function FAQSection({ lang }: FAQSectionProps) {
           })}
         </div>
 
-        {/* WhatsApp support callout */}
-        <div className="p-6 rounded-3xl bg-[#1A2744] border border-[#25D366]/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <div className="flex items-center gap-3">
+        <div className="p-5 sm:p-6 rounded-3xl bg-[#1A2744] border border-[#25D366]/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-[#25D366]/20 flex items-center justify-center text-[#25D366] shrink-0">
               <MessageCircle className="w-5 h-5" />
             </div>

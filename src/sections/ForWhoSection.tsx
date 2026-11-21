@@ -1,9 +1,6 @@
 import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CheckCircle, XCircle, Users } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, isCompactViewport, prefersReducedMotion } from '../utils/gsapConfig';
 
 interface ForWhoSectionProps {
   t: any;
@@ -16,31 +13,19 @@ export default function ForWhoSection({ lang }: ForWhoSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const colLeftRef = useRef<HTMLDivElement>(null);
   const colRightRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
+    if (isCompactViewport() || prefersReducedMotion()) return;
     const ctx = gsap.context(() => {
       gsap.from([colLeftRef.current, colRightRef.current], {
-        y: 40,
+        y: 36,
         opacity: 0,
-        duration: 0.8,
-        stagger: 0.2,
+        duration: 0.7,
+        stagger: 0.15,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 75%',
-          once: true,
-        },
-      });
-
-      gsap.from(imgRef.current, {
-        scale: 0.85,
-        opacity: 0,
-        duration: 0.9,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 70%',
+          start: 'top 80%',
           once: true,
         },
       });
@@ -86,21 +71,29 @@ export default function ForWhoSection({ lang }: ForWhoSectionProps) {
     <section
       id="for-who"
       ref={sectionRef}
-      className="relative py-24 px-4 sm:px-6 lg:px-8 bg-[#111f38] overflow-hidden"
+      className="relative py-14 sm:py-24 px-4 sm:px-6 lg:px-8 bg-[#111f38] overflow-x-clip"
     >
-      {/* Background glow */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-[160px] pointer-events-none" />
-      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-red-500/10 rounded-full blur-[160px] pointer-events-none" />
+      <div
+        className="absolute top-1/2 left-1/4 -translate-y-1/2 w-80 h-80 pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(16,185,129,0.09) 0%, transparent 70%)',
+        }}
+      />
+      <div
+        className="absolute top-1/2 right-1/4 -translate-y-1/2 w-80 h-80 pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(239,68,68,0.09) 0%, transparent 70%)',
+        }}
+      />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold uppercase tracking-wider mb-4">
             <Users className="w-4 h-4 text-[#FFD700]" />
             <span>{lang === 'fr' ? 'Profil Cible' : 'Target Profile'}</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
             {lang === 'fr' ? (
               <>
                 Est-ce que cette formation est{' '}
@@ -114,31 +107,30 @@ export default function ForWhoSection({ lang }: ForWhoSectionProps) {
             )}
           </h2>
 
-          <p className="text-white/70 text-base sm:text-lg">
+          <p className="text-white/70 text-sm sm:text-lg">
             {lang === 'fr'
               ? 'Transparence totale. Regarde ci-dessous avant de nous rejoindre.'
               : 'Complete transparency. Review the criteria below before enrolling.'}
           </p>
         </div>
 
-        {/* 2 Columns: Pour Qui vs Pas Pour Qui */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-stretch">
           {/* C'est pour toi */}
           <div
             ref={colLeftRef}
-            className="p-8 sm:p-10 rounded-3xl bg-[#0A1628]/90 border border-emerald-500/30 shadow-2xl relative flex flex-col justify-between"
+            className="p-6 sm:p-10 rounded-3xl bg-[#0A1628]/90 border border-emerald-500/30 shadow-2xl relative flex flex-col justify-between"
           >
-            <div className="absolute top-6 right-6 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-black text-xs uppercase tracking-wider">
+            <div className="inline-block self-start sm:self-auto sm:absolute sm:top-6 sm:right-6 mb-4 sm:mb-0 px-3.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-black text-xs uppercase tracking-wider">
               {lang === 'fr' ? 'Recommandé' : 'Recommended'}
             </div>
 
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
                   <CheckCircle className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl sm:text-2xl font-black text-white">
+                  <h3 className="text-lg sm:text-2xl font-black text-white">
                     {lang === 'fr' ? 'C’est fait pour toi si…' : 'Made for you if…'}
                   </h3>
                   <p className="text-xs text-emerald-400 font-semibold">
@@ -147,13 +139,11 @@ export default function ForWhoSection({ lang }: ForWhoSectionProps) {
                 </div>
               </div>
 
-              <ul className="space-y-4">
+              <ul className="space-y-3.5">
                 {forList.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-3.5">
+                  <li key={idx} className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
-                    <span className="text-sm sm:text-base text-white/90 leading-relaxed">
-                      {item}
-                    </span>
+                    <span className="text-sm sm:text-base text-white/90 leading-relaxed">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -164,7 +154,7 @@ export default function ForWhoSection({ lang }: ForWhoSectionProps) {
                 href={CHECKOUT_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-full font-bold text-sm text-[#0A1628] bg-gradient-to-r from-[#FFD700] to-[#FFE033] hover:from-[#FFE033] hover:to-[#FFD700] transition-all hover:scale-105 active:scale-95"
+                className="w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-full font-bold text-sm text-[#0A1628] bg-gradient-to-r from-[#FFD700] to-[#FFE033] hover:from-[#FFE033] hover:to-[#FFD700] transition-all hover:scale-[1.02] active:scale-95"
               >
                 <span>{lang === 'fr' ? 'Rejoindre la formation (4 500 FCFA) →' : 'Enroll now (4,500 FCFA) →'}</span>
               </a>
@@ -174,19 +164,19 @@ export default function ForWhoSection({ lang }: ForWhoSectionProps) {
           {/* Ce n'est PAS pour toi */}
           <div
             ref={colRightRef}
-            className="p-8 sm:p-10 rounded-3xl bg-[#0A1628]/90 border border-red-500/30 shadow-2xl relative flex flex-col justify-between"
+            className="p-6 sm:p-10 rounded-3xl bg-[#0A1628]/90 border border-red-500/30 shadow-2xl relative flex flex-col justify-between"
           >
-            <div className="absolute top-6 right-6 px-3.5 py-1 rounded-full bg-red-500/20 text-red-400 font-black text-xs uppercase tracking-wider">
+            <div className="inline-block self-start sm:self-auto sm:absolute sm:top-6 sm:right-6 mb-4 sm:mb-0 px-3.5 py-1 rounded-full bg-red-500/20 text-red-400 font-black text-xs uppercase tracking-wider">
               {lang === 'fr' ? 'À éviter' : 'Avoid'}
             </div>
 
             <div>
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-400 shrink-0">
                   <XCircle className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-xl sm:text-2xl font-black text-white">
+                  <h3 className="text-lg sm:text-2xl font-black text-white">
                     {lang === 'fr' ? 'Ce n’est PAS pour toi si…' : 'NOT for you if…'}
                   </h3>
                   <p className="text-xs text-red-400 font-semibold">
@@ -195,13 +185,11 @@ export default function ForWhoSection({ lang }: ForWhoSectionProps) {
                 </div>
               </div>
 
-              <ul className="space-y-4">
+              <ul className="space-y-3.5">
                 {notForList.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-3.5">
+                  <li key={idx} className="flex items-start gap-3">
                     <XCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                    <span className="text-sm sm:text-base text-white/70 leading-relaxed">
-                      {item}
-                    </span>
+                    <span className="text-sm sm:text-base text-white/70 leading-relaxed">{item}</span>
                   </li>
                 ))}
               </ul>

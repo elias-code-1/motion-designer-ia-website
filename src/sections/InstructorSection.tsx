@@ -1,9 +1,6 @@
 import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Award, ShieldAlert, CheckCircle2, MessageCircle } from 'lucide-react';
-
-gsap.registerPlugin(ScrollTrigger);
+import { gsap, isCompactViewport, prefersReducedMotion } from '../utils/gsapConfig';
 
 interface InstructorSectionProps {
   t: any;
@@ -16,27 +13,28 @@ export default function InstructorSection({ lang }: InstructorSectionProps) {
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (isCompactViewport() || prefersReducedMotion()) return;
     const ctx = gsap.context(() => {
       gsap.from(imgRef.current, {
-        x: -50,
+        x: -36,
         opacity: 0,
-        duration: 0.9,
+        duration: 0.75,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 75%',
+          start: 'top 80%',
           once: true,
         },
       });
 
       gsap.from(textRef.current, {
-        x: 50,
+        x: 36,
         opacity: 0,
-        duration: 0.9,
+        duration: 0.75,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 75%',
+          start: 'top 80%',
           once: true,
         },
       });
@@ -72,25 +70,30 @@ export default function InstructorSection({ lang }: InstructorSectionProps) {
     <section
       id="instructor"
       ref={sectionRef}
-      className="relative py-24 px-4 sm:px-6 lg:px-8 bg-[#0A1628] overflow-hidden"
+      className="relative py-14 sm:py-24 px-4 sm:px-6 lg:px-8 bg-[#0A1628] overflow-x-clip"
     >
-      {/* Background glow */}
-      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[550px] h-[550px] bg-[#FFD700]/5 rounded-full blur-[180px] pointer-events-none" />
+      <div
+        className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[480px] h-[480px] pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle, rgba(255,215,0,0.06) 0%, transparent 70%)',
+        }}
+      />
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left Column: Photo of Elias Confident (arms crossed) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+          {/* Photo Column */}
           <div className="lg:col-span-5 relative flex justify-center">
             <div className="relative w-full max-w-sm sm:max-w-md">
-              {/* Golden frame background */}
-              <div className="absolute -inset-4 rounded-3xl bg-gradient-to-tr from-[#FFD700]/20 to-blue-600/20 blur-xl opacity-70" />
-
-              <div className="relative rounded-3xl overflow-hidden border border-[#FFD700]/30 bg-[#1A2744] p-6 shadow-2xl flex flex-col items-center">
+              <div className="relative rounded-3xl overflow-hidden border border-[#FFD700]/30 bg-[#1A2744] p-5 sm:p-6 shadow-2xl flex flex-col items-center">
                 <img
                   ref={imgRef}
-                  src="/assets/images/elias-confident-nobg.png"
+                  src="/assets/images/elias-confident-nobg.webp"
+                  width={635}
+                  height={850}
+                  loading="lazy"
+                  decoding="async"
                   alt="APEDO Elias - Formateur Motion Designer IA"
-                  className="w-full max-h-[480px] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.9)]"
+                  className="w-auto max-h-[360px] sm:max-h-[460px] object-contain"
                 />
 
                 <div className="w-full mt-4 p-4 rounded-2xl bg-[#0A1628] border border-white/10 text-center">
@@ -106,14 +109,14 @@ export default function InstructorSection({ lang }: InstructorSectionProps) {
             </div>
           </div>
 
-          {/* Right Column: Bio & Core Values */}
+          {/* Bio Column */}
           <div ref={textRef} className="lg:col-span-7 flex flex-col items-start">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FFD700]/10 border border-[#FFD700]/30 text-[#FFD700] text-xs font-bold uppercase tracking-wider mb-4">
               <Award className="w-4 h-4 text-[#FFD700]" />
               <span>{lang === 'fr' ? 'À Propos du Formateur' : 'About the Instructor'}</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white leading-tight mb-4">
               {lang === 'fr' ? (
                 <>
                   Pourquoi me faire confiance ?{' '}
@@ -127,14 +130,14 @@ export default function InstructorSection({ lang }: InstructorSectionProps) {
               )}
             </h2>
 
-            <p className="text-white/80 text-base sm:text-lg leading-relaxed mb-6">
+            <p className="text-white/80 text-sm sm:text-lg leading-relaxed mb-6">
               {lang === 'fr'
                 ? 'Je suis développeur web et entrepreneur digital. Tout ce que je montre dans cette formation, je l’ai testé moi-même et je l’utilise quotidiennement pour mes propres projets et clients. Tu me vois le faire en direct sur mon écran, de la configuration initiale jusqu’au rendu HD.'
                 : 'I am a web developer and digital entrepreneur. Everything I teach, I have personally tested and run every single day for real clients and internal businesses. You watch me perform every action on-screen, from blank prompt to final render.'}
             </p>
 
             {/* Transparency Highlight Box */}
-            <div className="p-6 rounded-2xl bg-[#1A2744] border border-[#FFD700]/30 mb-8 w-full">
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#1A2744] border border-[#FFD700]/30 mb-7 w-full">
               <div className="flex items-center gap-2.5 mb-3 text-[#FFD700]">
                 <ShieldAlert className="w-5 h-5 shrink-0" />
                 <h4 className="font-extrabold text-sm sm:text-base uppercase tracking-wide">
@@ -173,30 +176,31 @@ export default function InstructorSection({ lang }: InstructorSectionProps) {
             </div>
 
             {/* Stats Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full mb-8">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 sm:gap-4 w-full mb-7">
               {stats.map((s, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-2xl bg-white/[0.04] border border-white/10 text-center"
+                  className="p-3.5 sm:p-4 rounded-2xl bg-white/[0.04] border border-white/10 text-center"
                 >
                   <p className="text-2xl sm:text-3xl font-black text-[#FFD700]">{s.val}</p>
-                  <p className="text-[11px] text-white/60 font-semibold mt-1">
+                  <p className="text-[11px] text-white/65 font-semibold mt-1">
                     {lang === 'en' ? s.labelEn : s.labelFr}
                   </p>
                 </div>
               ))}
             </div>
 
-            {/* Direct WhatsApp Contact Button */}
             <a
               href="https://wa.me/22897347147"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-[#25D366]/15 hover:bg-[#25D366] text-[#25D366] hover:text-white border border-[#25D366]/40 font-bold text-sm transition-all"
+              className="inline-flex items-center gap-2.5 px-5 sm:px-6 py-3 rounded-full bg-[#25D366]/15 hover:bg-[#25D366] text-[#25D366] hover:text-white border border-[#25D366]/40 font-bold text-xs sm:text-sm transition-colors"
             >
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="w-4 h-4 shrink-0" />
               <span>
-                {lang === 'fr' ? 'Poser une question à Elias (+228 97 34 71 47)' : 'Chat with Elias (+228 97 34 71 47)'}
+                {lang === 'fr'
+                  ? 'Poser une question à Elias (+228 97 34 71 47)'
+                  : 'Chat with Elias (+228 97 34 71 47)'}
               </span>
             </a>
           </div>

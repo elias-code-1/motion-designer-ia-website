@@ -3,9 +3,9 @@ interface FooterProps {
   lang: string;
 }
 
-export default function Footer({ lang }: FooterProps) {
-  const currentYear = new Date().getFullYear();
+const CURRENT_YEAR = new Date().getFullYear();
 
+export default function Footer({ lang }: FooterProps) {
   return (
     <footer className="bg-[#050c17] border-t border-white/10 text-white/70 py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -122,7 +122,7 @@ export default function Footer({ lang }: FooterProps) {
           </p>
 
           <p className="shrink-0 text-center md:text-right font-medium">
-            © {currentYear} Motion Designer IA — by Elias. Tous droits réservés.
+            © {CURRENT_YEAR} Motion Designer IA — by Elias. Tous droits réservés.
           </p>
         </div>
       </div>
